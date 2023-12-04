@@ -32,7 +32,7 @@ func main() {
 
 	charge, err := client.CreateCharge(&commerce.ChargeRequest{
 		PricingType: "fixed_price",
-		LocalPrice: commerce.LocalPrice{
+		LocalPrice: &commerce.LocalPrice{
 			Amount:   "1.00",
 			Currency: "USD",
 		},
