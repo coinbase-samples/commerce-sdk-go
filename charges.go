@@ -29,7 +29,7 @@ const (
 
 func (c *Client) CreateCharge(req *ChargeRequest) (*ChargeResponse, error) {
 
-	if req.LocalPrice == (LocalPrice{}) {
+	if req.LocalPrice == nil {
 		return nil, errors.New("LocalPrice is required for ChargeRequest")
 	}
 

@@ -24,6 +24,10 @@ import (
 )
 
 func TestCreateCharge(t *testing.T) {
+	pricing_type := "fixed_price"
+	currency := "USD"
+	chargeAmount := "1.00"
+
 	creds, err := ReadEnvCredentials("COMMERCE_API_KEY")
 	if err != nil {
 		fmt.Printf("Error retireving creds: %s ", err)
@@ -31,10 +35,10 @@ func TestCreateCharge(t *testing.T) {
 
 	c := NewClient(creds, http.Client{})
 	req := &ChargeRequest{
-		PricingType: "fixed_price",
-		LocalPrice: LocalPrice{
-			Amount:   "1.00",
-			Currency: "USD",
+		PricingType: pricing_type,
+		LocalPrice: &LocalPrice{
+			Amount:   chargeAmount,
+			Currency: currency,
 		},
 	}
 
