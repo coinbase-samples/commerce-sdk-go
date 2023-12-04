@@ -28,7 +28,7 @@ git clone git@github.com:coinbase-samples/commerce-sdk-go.git
 export COMMERCE_API_KEY=<YOUR-COMMERCE-API-KEY>
 ```
 
-**Initialize the Commerce client**
+**Initialize the Commerce client with credentials**
 
 ```go
 creds, err := commerce.ReadEnvCredentials("COMMERCE_API_KEY")
