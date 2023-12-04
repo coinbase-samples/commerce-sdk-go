@@ -27,6 +27,13 @@ const (
 	chargesEndpoint = "/charges"
 )
 
+func (c *Client) setHeaders(req *http.Request) {
+	req.Header.Set("X-CC-Api-Key", c.Credentials.ApiKey)
+	req.Header.Set("X-CC-Version", "2018-03-22")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+}
+
 func (c *Client) CreateCharge(req *ChargeRequest) (*ChargeResponse, error) {
 
 	if req.LocalPrice == nil {
@@ -49,10 +56,7 @@ func (c *Client) CreateCharge(req *ChargeRequest) (*ChargeResponse, error) {
 		return nil, err
 	}
 
-	httpReq.Header.Set("X-CC-Api-Key", c.Credentials.ApiKey)
-	httpReq.Header.Set("X-CC-Version", "2018-03-22")
-	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Accept", "application/json")
+	c.setHeaders(httpReq)
 
 	resp, err := c.HttpClient.Do(httpReq)
 	if err != nil {
@@ -80,10 +84,7 @@ func (c *Client) GetCharge(chargeId string) (*ChargeResponse, error) {
 		return nil, err
 	}
 
-	httpReq.Header.Set("X-CC-Api-Key", c.Credentials.ApiKey)
-	httpReq.Header.Set("X-CC-Version", "2018-03-22")
-	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Accept", "application/json")
+	c.setHeaders(httpReq)
 
 	resp, err := c.HttpClient.Do(httpReq)
 	if err != nil {
