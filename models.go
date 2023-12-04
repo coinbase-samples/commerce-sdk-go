@@ -25,7 +25,7 @@ type Credentials struct {
 type ChargeRequest struct {
 	BuyerLocale string                  `json:"Buyer_locale,omitempty"`
 	PricingType string                  `json:"pricing_type"`
-	LocalPrice  LocalPrice              `json:"local_price"`
+	LocalPrice  *LocalPrice             `json:"local_price"`
 	Metadata    *map[string]interface{} `json:"metadata,omitempty"`
 	RedirectUrl string                  `json:"redirect_url,omitempty"`
 	CancelUrl   string                  `json:"cancel_url,omitempty"`
@@ -156,7 +156,7 @@ type EventData struct {
 }
 
 type DetailedData struct {
-	ID           string                  `json:"id"`
+	Id           string                  `json:"id"`
 	Code         string                  `json:"code"`
 	Pricing      Pricing                 `json:"pricing"`
 	Metadata     *map[string]interface{} `json:"metadata,omitempty"`
@@ -165,11 +165,11 @@ type DetailedData struct {
 	Web3Data     Web3Data                `json:"web3_data"`
 	CreatedAt    time.Time               `json:"created_at"`
 	ExpiresAt    time.Time               `json:"expires_at"`
-	HostedURL    string                  `json:"hosted_url"`
+	HostedUrl    string                  `json:"hosted_url"`
 	BrandColor   string                  `json:"brand_color"`
 	ChargeKind   string                  `json:"charge_kind"`
 	PricingType  string                  `json:"pricing_type"`
 	SupportEmail string                  `json:"support_email"`
-	BrandLogoURL string                  `json:"brand_logo_url"`
+	BrandLogoUrl string                  `json:"brand_logo_url"`
 	OrgName      string                  `json:"organization_name"`
 }
