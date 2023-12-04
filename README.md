@@ -57,7 +57,7 @@ if err != nil {
 fmt.Print(charge.Data.ID)
 ```
 
-### Quick-start example
+### Quickstart example
 
 The ["example"](https://github.com/coinbase-samples/commerce-sdk-go/tree/main/example) folder will contain the logic to create a charge in the amount of $1.00. To see this in action:
 
