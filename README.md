@@ -42,19 +42,36 @@ client := commerce.NewClient(creds, http.Client{},)
 Once a client is initialized, you may call any of the functions. For example, to create a charge,
 
 ```go
-charge, err := client.CreateCharge(&commerce.ChargeRequest{
-	PricingType: "fixed_price",
-	LocalPrice: commerce.LocalPrice{
-	Amount: "1.00",
-	Currency: "USD",
-	},
- })
+func main() {
+	//Initialize credentials struct
+	creds, err := commerce.ReadEnvCredentials("COMMERCE_API_KEY")
+	if err != nil {
+		fmt.Printf("Error reading environmental variable: %s", err)
+	}
 
-if err != nil {
-	fmt.Printf("Error: %s", err)
+	//Initialize client
+	client := commerce.NewClient(creds, http.Client{})
+
+	//Add desired context
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	//Create charge
+	charge, err := client.CreateCharge(ctx, &commerce.ChargeRequest{
+		PricingType: "fixed_price",
+		LocalPrice: &commerce.LocalPrice{
+			Amount:   "1.00",
+			Currency: "USD",
+		},
+	})
+
+	if err != nil {
+		fmt.Printf("error: %s\n", err)
+	}
+
+	//Print the hosted url
+	fmt.Printf("hosted url: %s\n", charge.Data.HostedURL)
 }
-
-fmt.Print(charge.Data.ID)
 ```
 
 ### Quickstart example
