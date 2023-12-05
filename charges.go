@@ -17,6 +17,7 @@ package commerce
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -34,7 +35,7 @@ func (c *Client) setHeaders(req *http.Request) {
 	req.Header.Set("Accept", "application/json")
 }
 
-func (c *Client) CreateCharge(req *ChargeRequest) (*ChargeResponse, error) {
+func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeResponse, error) {
 
 	if req.LocalPrice == nil {
 		return nil, errors.New("LocalPrice is required for ChargeRequest")
@@ -51,7 +52,7 @@ func (c *Client) CreateCharge(req *ChargeRequest) (*ChargeResponse, error) {
 		return nil, err
 	}
 
-	httpReq, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
@@ -75,11 +76,11 @@ func (c *Client) CreateCharge(req *ChargeRequest) (*ChargeResponse, error) {
 	return &chargeResponse, nil
 }
 
-func (c *Client) GetCharge(chargeId string) (*ChargeResponse, error) {
+func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeResponse, error) {
 
 	url := fmt.Sprintf("%s%s/%s", c.HttpBaseUrl, chargesEndpoint, chargeId)
 
-	httpReq, err := http.NewRequest("GET", url, nil)
+	httpReq, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}

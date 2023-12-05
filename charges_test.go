@@ -17,16 +17,20 @@
 package commerce
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 )
 
 func TestCreateCharge(t *testing.T) {
 	pricing_type := "fixed_price"
 	currency := "USD"
 	chargeAmount := "1.00"
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	creds, err := ReadEnvCredentials("COMMERCE_API_KEY")
 	if err != nil {
@@ -42,7 +46,7 @@ func TestCreateCharge(t *testing.T) {
 		},
 	}
 
-	resp, err := c.CreateCharge(req)
+	resp, err := c.CreateCharge(ctx, req)
 	if err != nil {
 		t.Fatalf("Error creating charge: %s", err)
 	}
