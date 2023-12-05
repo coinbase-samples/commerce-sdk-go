@@ -17,16 +17,17 @@
 package commerce
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 )
 
-func (c *Client) ListEvents() (*EventResponse, error) {
+func (c *Client) ListEvents(ctx context.Context) (*EventResponse, error) {
 	url := c.HttpBaseUrl + "/events"
 
-	httpReq, err := http.NewRequest("GET", url, nil)
+	httpReq, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +51,7 @@ func (c *Client) ListEvents() (*EventResponse, error) {
 
 }
 
-func (c *Client) ShowEvent(eventId string) (*EventResponse, error) {
+func (c *Client) ShowEvent(ctx context.Context, eventId string) (*EventResponse, error) {
 
 	if eventId == "" {
 		return nil, errors.New("Please enter an eventId")
@@ -58,7 +59,7 @@ func (c *Client) ShowEvent(eventId string) (*EventResponse, error) {
 
 	url := fmt.Sprintf("%s/events/%s", c.HttpBaseUrl, eventId)
 
-	httpReq, err := http.NewRequest("GET", url, nil)
+	httpReq, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}

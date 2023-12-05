@@ -16,8 +16,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/coinbase-samples/commerce-sdk-go"
 )
@@ -29,8 +31,10 @@ func main() {
 	}
 
 	client := commerce.NewClient(creds, http.Client{})
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-	charge, err := client.CreateCharge(&commerce.ChargeRequest{
+	charge, err := client.CreateCharge(ctx, &commerce.ChargeRequest{
 		PricingType: "fixed_price",
 		LocalPrice: &commerce.LocalPrice{
 			Amount:   "1.00",
