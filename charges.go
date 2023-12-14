@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -47,12 +48,12 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 
 	url := fmt.Sprintf("%s%s", c.HttpBaseUrl, chargesEndpoint)
 
-	body, err := json.Marshal(req)
+	payload, err := json.Marshal(req)
 	if err != nil {
 		return nil, err
 	}
 
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(body))
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(payload))
 	if err != nil {
 		return nil, err
 	}
@@ -65,15 +66,16 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 	}
 
 	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
 
-	var chargeResponse ChargeResponse
+	var chargeResponse *ChargeResponse
 
-	err = json.NewDecoder(resp.Body).Decode(&chargeResponse)
+	err = json.Unmarshal(body, chargeResponse)
 	if err != nil {
 		return nil, err
 	}
 
-	return &chargeResponse, nil
+	return chargeResponse, nil
 }
 
 func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeResponse, error) {
@@ -93,13 +95,14 @@ func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeRespons
 	}
 
 	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
 
-	var chargeResponse ChargeResponse
-	err = json.NewDecoder(resp.Body).Decode(&chargeResponse)
+	var chargeResponse *ChargeResponse
+	err = json.Unmarshal(body, chargeResponse)
 	if err != nil {
 		return nil, err
 	}
 
-	return &chargeResponse, nil
+	return chargeResponse, nil
 
 }
