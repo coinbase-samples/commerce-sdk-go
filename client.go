@@ -18,7 +18,7 @@ package commerce
 
 import "net/http"
 
-var BaseUrl = "https://api.commerce.coinbase.com"
+var baseUrl = "https://api.commerce.coinbase.com"
 
 type Client struct {
 	HttpClient  http.Client
@@ -36,7 +36,7 @@ func NewClient(credentials *Credentials, httpClient http.Client) *Client {
 	return &Client{
 		HttpClient:  httpClient,
 		Credentials: credentials,
-		HttpBaseUrl: BaseUrl,
+		HttpBaseUrl: baseUrl,
 	}
 
 }
