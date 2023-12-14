@@ -32,9 +32,9 @@ export COMMERCE_API_KEY=<YOUR-COMMERCE-API-KEY>
 
 ```go
 creds, err := commerce.ReadEnvCredentials("COMMERCE_API_KEY")
-if err != nil{
-fmt.Printf("Error reading environmental variable: %s", err)
- }
+if err != nil {
+	fmt.Printf("Error reading environmental variable: %s", err)
+}
 
 client := commerce.NewClient(creds, http.Client{},)
 ```
@@ -43,20 +43,19 @@ Once a client is initialized, you may call any of the functions. For example, to
 
 ```go
 func main() {
-	//Initialize credentials struct
+	// Initialize credentials struct
 	creds, err := commerce.ReadEnvCredentials("COMMERCE_API_KEY")
 	if err != nil {
 		fmt.Printf("Error reading environmental variable: %s", err)
 	}
 
-	//Initialize client
+	// Initialize client
 	client := commerce.NewClient(creds, http.Client{})
 
-	//Add desired context
+	// Add desired context
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	//Create charge
 	charge, err := client.CreateCharge(ctx, &commerce.ChargeRequest{
 		PricingType: "fixed_price",
 		LocalPrice: &commerce.LocalPrice{
@@ -69,7 +68,7 @@ func main() {
 		fmt.Printf("error: %s\n", err)
 	}
 
-	//Print the hosted url
+	// Print the hosted url
 	fmt.Printf("hosted url: %s\n", charge.Data.HostedURL)
 }
 ```

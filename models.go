@@ -42,14 +42,14 @@ type ChargeResponse struct {
 
 type ChargeData struct {
 	BrandColor       string     `json:"brand_color"`
-	BrandLogoURL     string     `json:"brand_logo_url"`
+	BrandLogoUrl     string     `json:"brand_logo_url"`
 	ChargeKind       string     `json:"charge_kind"`
 	Code             string     `json:"code"`
 	ConfirmedAt      string     `json:"confirmed_at"`
 	CreatedAt        string     `json:"created_at"`
 	ExpiresAt        string     `json:"expires_at"`
-	HostedURL        string     `json:"hosted_url"`
-	ID               string     `json:"id"`
+	HostedUrl        string     `json:"hosted_url"`
+	Id               string     `json:"id"`
 	OrganizationName string     `json:"organization_name"`
 	Pricing          Pricing    `json:"pricing"`
 	PricingType      string     `json:"pricing_type"`
@@ -70,8 +70,8 @@ type Price struct {
 }
 
 type Redirects struct {
-	CancelURL                string `json:"cancel_url"`
-	SuccessURL               string `json:"success_url"`
+	CancelUrl                string `json:"cancel_url"`
+	SuccessUrl               string `json:"success_url"`
 	WillRedirectAfterSuccess bool   `json:"will_redirect_after_success"`
 }
 
@@ -95,7 +95,7 @@ type TransferIntent struct {
 type CallData struct {
 	Deadline          string `json:"deadline"`
 	FeeAmount         string `json:"fee_amount"`
-	ID                string `json:"id"`
+	Id                string `json:"id"`
 	Operator          string `json:"operator"`
 	Prefix            string `json:"prefix"`
 	Recipient         string `json:"recipient"`
@@ -106,7 +106,7 @@ type CallData struct {
 }
 
 type ResponseMetadata struct {
-	ChainID         int    `json:"chain_id"`
+	ChainId         int    `json:"chain_id"`
 	ContractAddress string `json:"contract_address"`
 	Sender          string `json:"sender"`
 }
@@ -147,7 +147,7 @@ type Pagination struct {
 }
 
 type EventData struct {
-	APIVersion string       `json:"api_version"`
+	ApiVersion string       `json:"api_version"`
 	CreatedAt  time.Time    `json:"created_at"`
 	Data       DetailedData `json:"data"`
 	ID         string       `json:"id"`
