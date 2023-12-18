@@ -174,7 +174,13 @@ type DetailedData struct {
 	OrgName      string                  `json:"organization_name"`
 }
 
+type ApiErrorDetail struct {
+	Type    string `json:"type"`
+	Message string `json:"message"`
+}
+
 type ChargeError struct {
-	Status int32  `json:"status"`
-	Error  string `json:"error"`
+	Status   int32          `json:"status"`
+	Error    ApiErrorDetail `json:"error"`
+	Warnings []string       `json:"warnings"`
 }
