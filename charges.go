@@ -36,46 +36,61 @@ func (c *Client) setHeaders(req *http.Request) {
 	req.Header.Set("Accept", "application/json")
 }
 
-func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeResponse, error) {
+func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeResponse, *ChargeError, error) {
 
 	if req.LocalPrice == nil {
-		return nil, errors.New("LocalPrice is required for ChargeRequest")
+		return nil, nil, errors.New("LocalPrice is required for ChargeRequest")
 	}
 
 	if req.PricingType == "" {
-		return nil, errors.New("PricingType is required for ChargeRequest")
+		return nil, nil, errors.New("PricingType is required for ChargeRequest")
 	}
 
 	url := fmt.Sprintf("%s%s", c.HttpBaseUrl, chargesEndpoint)
 
 	payload, err := json.Marshal(req)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(payload))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	c.setHeaders(httpReq)
 
 	resp, err := c.HttpClient.Do(httpReq)
+
 	if err != nil {
-		return nil, err
+		return nil, nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		chargeErr := new(ChargeError)
+		body, err := io.ReadAll(resp.Body)
+
+		if err != nil {
+			return nil, nil, err
+		}
+		err = json.Unmarshal(body, chargeErr)
+		if err != nil {
+			return nil, nil, err
+		}
+		return nil, chargeErr, nil
 	}
 
-	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 
 	var chargeResponse *ChargeResponse
-
 	err = json.Unmarshal(body, chargeResponse)
 	if err != nil {
-		return nil, err
+		fmt.Println(body)
+		return nil, nil, err
 	}
 
-	return chargeResponse, nil
+	return chargeResponse, nil, nil
 }
 
 func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeResponse, error) {

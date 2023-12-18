@@ -173,3 +173,8 @@ type DetailedData struct {
 	BrandLogoUrl string                  `json:"brand_logo_url"`
 	OrgName      string                  `json:"organization_name"`
 }
+
+type ChargeError struct {
+	Status int32  `json:"status"`
+	Error  string `json:"error"`
+}
