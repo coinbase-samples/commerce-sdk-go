@@ -22,6 +22,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -68,14 +69,9 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		chargeErr := new(ChargeError)
-		body, err := io.ReadAll(resp.Body)
-
+		chargeErr, err := handleErrorResponse(resp)
 		if err != nil {
-			return nil, nil, err
-		}
-		err = json.Unmarshal(body, chargeErr)
-		if err != nil {
+			fmt.Printf("error: %s", err)
 			return nil, nil, err
 		}
 		return nil, chargeErr, nil
@@ -84,7 +80,7 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 	body, err := io.ReadAll(resp.Body)
 
 	var chargeResponse *ChargeResponse
-	err = json.Unmarshal(body, chargeResponse)
+	err = json.Unmarshal(body, &chargeResponse)
 	if err != nil {
 		fmt.Println(body)
 		return nil, nil, err
@@ -93,31 +89,56 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 	return chargeResponse, nil, nil
 }
 
-func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeResponse, error) {
+func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeResponse, *ChargeError, error) {
 
 	url := fmt.Sprintf("%s%s/%s", c.HttpBaseUrl, chargesEndpoint, chargeId)
 
 	httpReq, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	c.setHeaders(httpReq)
 
 	resp, err := c.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		chargeErr, err := handleErrorResponse(resp)
+		if err != nil {
+			fmt.Printf("error: %s", err)
+			return nil, nil, err
+		}
+		return nil, chargeErr, nil
+	}
+
 	body, err := io.ReadAll(resp.Body)
 
 	var chargeResponse *ChargeResponse
-	err = json.Unmarshal(body, chargeResponse)
+	err = json.Unmarshal(body, &chargeResponse)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return chargeResponse, nil
+	return chargeResponse, nil, nil
 
+}
+
+func handleErrorResponse(response *http.Response) (*ChargeError, error) {
+	var chargeErr *ChargeError
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		log.Fatalf("error reading body: %s", err)
+		return nil, err
+	}
+	err = json.Unmarshal(body, &chargeErr)
+	if err != nil {
+		log.Fatalf("error: %s", err)
+		return nil, err
+	}
+	return chargeErr, nil
 }
