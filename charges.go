@@ -80,9 +80,7 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 	body, err := io.ReadAll(resp.Body)
 
 	var chargeResponse *ChargeResponse
-	err = json.Unmarshal(body, &chargeResponse)
-	if err != nil {
-		fmt.Println(body)
+	if err = json.Unmarshal(body, &chargeResponse); err != nil {
 		return nil, nil, err
 	}
 
@@ -119,8 +117,7 @@ func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeRespons
 	body, err := io.ReadAll(resp.Body)
 
 	var chargeResponse *ChargeResponse
-	err = json.Unmarshal(body, &chargeResponse)
-	if err != nil {
+	if err := json.Unmarshal(body, &chargeResponse); err != nil {
 		return nil, nil, err
 	}
 
@@ -135,8 +132,7 @@ func handleErrorResponse(response *http.Response) (*ChargeError, error) {
 		log.Fatalf("error reading body: %s", err)
 		return nil, err
 	}
-	err = json.Unmarshal(body, &chargeErr)
-	if err != nil {
+	if err := json.Unmarshal(body, &chargeErr); err != nil {
 		log.Fatalf("error: %s", err)
 		return nil, err
 	}
