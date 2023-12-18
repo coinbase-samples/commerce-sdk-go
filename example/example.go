@@ -18,6 +18,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -34,7 +35,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	charge, err := client.CreateCharge(ctx, &commerce.ChargeRequest{
+	charge, chargeError, err := client.CreateCharge(ctx, &commerce.ChargeRequest{
 		PricingType: "fixed_price",
 		LocalPrice: &commerce.LocalPrice{
 			Amount:   "1.00",
@@ -42,10 +43,13 @@ func main() {
 		},
 	})
 
-	if err != nil {
-		fmt.Printf("error: %s\n", err)
+	if chargeError != nil {
+		log.Fatalf("error: Status: %d, Error: %s\n", chargeError.Status, chargeError.Error)
 	}
 
-	fmt.Printf("created a charge ID: %s\n", charge.Data.ID)
-	fmt.Printf("hosted url: %s\n", charge.Data.HostedURL)
+	if err != nil {
+		log.Fatalf("error: %s\n", err)
+	}
+
+	fmt.Printf("charge created \n Id: %v\n hosted_url: %s", charge.Data.Id, charge.Data.HostedUrl)
 }
