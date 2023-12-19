@@ -34,7 +34,7 @@ func TestCreateCharge(t *testing.T) {
 
 	creds, err := ReadEnvCredentials("COMMERCE_API_KEY")
 	if err != nil {
-		t.Fatalf("Error retireving credentials: %s ", err)
+		t.Fatalf("error retireving credentials: %s ", err)
 	}
 
 	c := NewClient(creds, http.Client{})
@@ -46,17 +46,18 @@ func TestCreateCharge(t *testing.T) {
 		},
 	}
 
-	chargeResponse, chargeError, err := c.CreateCharge(ctx, req)
+	chargeResponse, err := c.CreateCharge(ctx, req)
 	if err != nil {
-		t.Fatalf("error creating charge: %s", err)
-	}
-	if chargeError != nil {
-		t.Fatalf("API error creating charge %v", chargeError)
+		if commErr, ok := err.(*CommerceError); ok {
+			t.Fatalf("system error creating charge : %v", commErr)
+		} else {
+			t.Fatalf("error creating charge: %s", err)
+		}
 	}
 
 	formattedResponse, err := json.MarshalIndent(chargeResponse, " ", " ")
 	if err != nil {
-		t.Fatalf("Error formatting charge: %b", err)
+		t.Fatalf("error formatting charge: %b", err)
 	}
 
 	fmt.Print(string(formattedResponse))
