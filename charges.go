@@ -31,18 +31,15 @@ const (
 )
 
 type CommerceError struct {
-	ApiError    *ChargeError
-	SystemError error
+	ApiError *ChargeError
+	Err      error
 }
 
 func (e *CommerceError) Error() string {
 	if e.ApiError != nil {
 		return fmt.Sprintf("API error: %v, warnings: %v", e.ApiError.Error, e.ApiError.Warnings)
 	}
-	if e.SystemError != nil {
-		return e.SystemError.Error()
-	}
-	return "unknown error"
+	return e.Err.Error()
 }
 
 func (c *Client) setHeaders(req *http.Request) {
@@ -86,7 +83,7 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		chargeErr, err := handleErrorResponse(resp)
 		if err != nil {
-			return nil, &CommerceError{SystemError: err}
+			return nil, &CommerceError{Err: err}
 		}
 		return nil, &CommerceError{ApiError: chargeErr}
 	}
@@ -122,13 +119,15 @@ func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeRespons
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		chargeErr, err := handleErrorResponse(resp)
 		if err != nil {
-			return nil, &CommerceError{SystemError: err}
+			return nil, &CommerceError{Err: err}
 		}
 		return nil, &CommerceError{ApiError: chargeErr}
 	}
 
 	body, err := io.ReadAll(resp.Body)
-
+	if err != nil {
+		return nil, err
+	}
 	var chargeResponse *ChargeResponse
 	if err := json.Unmarshal(body, &chargeResponse); err != nil {
 		return nil, err
