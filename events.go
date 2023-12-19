@@ -27,7 +27,7 @@ import (
 func (c *Client) ListEvents(ctx context.Context) (*EventResponse, error) {
 	url := c.HttpBaseUrl + "/events"
 
-	httpReq, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (c *Client) ShowEvent(ctx context.Context, eventId string) (*EventResponse,
 
 	url := fmt.Sprintf("%s/events/%s", c.HttpBaseUrl, eventId)
 
-	httpReq, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
