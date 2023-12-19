@@ -180,7 +180,7 @@ type ApiErrorDetail struct {
 }
 
 type ChargeError struct {
-	Status   int32          `json:"status"`
+	Status   int            `json:"status"`
 	Error    ApiErrorDetail `json:"error"`
 	Warnings []string       `json:"warnings"`
 }
