@@ -35,7 +35,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	charge, chargeError, err := client.CreateCharge(ctx, &commerce.ChargeRequest{
+	charge, err := client.CreateCharge(ctx, &commerce.ChargeRequest{
 		PricingType: "fixed_price",
 		LocalPrice: &commerce.LocalPrice{
 			Amount:   "1.00",
@@ -43,12 +43,12 @@ func main() {
 		},
 	})
 
-	if chargeError != nil {
-		log.Fatalf("error: Status: %d, Error: %s\n", chargeError.Status, chargeError.Error)
-	}
-
 	if err != nil {
-		log.Fatalf("error: %s\n", err)
+		if comErr, ok := err.(*commerce.CommerceError); ok {
+			log.Fatalf("api error creating charge: %v", comErr)
+		} else {
+			log.Fatalf("error: %s\n", err)
+		}
 	}
 
 	fmt.Printf("charge created \n Id: %v\n hosted_url: %s", charge.Data.Id, charge.Data.HostedUrl)
