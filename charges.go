@@ -30,11 +30,6 @@ const (
 	chargesEndpoint = "/charges"
 )
 
-type CommerceError struct {
-	ApiError *ChargeError
-	Err      error
-}
-
 func (e *CommerceError) Error() string {
 	if e.ApiError != nil {
 		return fmt.Sprintf("API error: %v, warnings: %v", e.ApiError.Error, e.ApiError.Warnings)
@@ -80,7 +75,7 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultiStatus {
 		chargeErr, err := handleErrorResponse(resp)
 		if err != nil {
 			return nil, &CommerceError{Err: err}
@@ -119,7 +114,7 @@ func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeRespons
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultiStatus {
 		chargeErr, err := handleErrorResponse(resp)
 		if err != nil {
 			return nil, &CommerceError{Err: err}
