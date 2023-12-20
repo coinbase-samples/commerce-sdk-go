@@ -184,3 +184,8 @@ type ChargeError struct {
 	Error    ApiErrorDetail `json:"error"`
 	Warnings []string       `json:"warnings"`
 }
+
+type CommerceError struct {
+	ApiError *ChargeError
+	Err      error
+}
