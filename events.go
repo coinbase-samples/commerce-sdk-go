@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -41,13 +42,21 @@ func (c *Client) ListEvents(ctx context.Context) (*EventResponse, error) {
 
 	defer resp.Body.Close()
 
-	var eventResponse EventResponse
-	err = json.NewDecoder(resp.Body).Decode(&eventResponse)
-	if err != nil {
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		eventErr, err := handleErrorResponse(resp)
+		if err != nil {
+			return nil, &CommerceError{Err: err}
+		}
+		return nil, &CommerceError{ApiError: eventErr}
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	var eventResponse *EventResponse = new(EventResponse)
+	if err := json.Unmarshal(body, eventResponse); err != nil {
 		return nil, err
 	}
 
-	return &eventResponse, nil
+	return eventResponse, nil
 
 }
 
@@ -73,11 +82,23 @@ func (c *Client) ShowEvent(ctx context.Context, eventId string) (*EventResponse,
 
 	defer resp.Body.Close()
 
-	var eventResponse EventResponse
-	err = json.NewDecoder(resp.Body).Decode(&eventResponse)
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		eventErr, err := handleErrorResponse(resp)
+		if err != nil {
+			return nil, &CommerceError{Err: err}
+		}
+		return nil, &CommerceError{ApiError: eventErr}
+	}
+
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	return &eventResponse, nil
+	var eventResponse *EventResponse = new(EventResponse)
+	if err = json.Unmarshal(body, eventResponse); err != nil {
+		return nil, err
+	}
+
+	return eventResponse, nil
 }
