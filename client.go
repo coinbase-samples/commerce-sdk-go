@@ -31,6 +31,13 @@ func (c *Client) BaseUrl(u string) *Client {
 	return c
 }
 
+func (c *Client) setHeaders(req *http.Request) {
+	req.Header.Set("X-CC-Api-Key", c.Credentials.ApiKey)
+	req.Header.Set("X-CC-Version", "2018-03-22")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+}
+
 func NewClient(credentials *Credentials, httpClient http.Client) *Client {
 
 	return &Client{
