@@ -94,7 +94,7 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 	}
 
 	var chargeResponse *ChargeResponse
-	if err = json.Unmarshal(body, chargeResponse); err != nil {
+	if err = json.Unmarshal(body, &chargeResponse); err != nil {
 		return nil, err
 	}
 
