@@ -16,7 +16,17 @@
 
 package commerce
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
+
+func (e *CommerceError) Error() string {
+	if e.ApiError != nil {
+		return fmt.Sprintf("API error: %v, warnings: %v", e.ApiError.Error, e.ApiError.Warnings)
+	}
+	return e.Err.Error()
+}
 
 type Credentials struct {
 	ApiKey string `json:"X-CC-Api-Key"`
