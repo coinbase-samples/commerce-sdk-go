@@ -60,12 +60,8 @@ func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeR
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultiStatus {
-		chargeErr, err := handleErrorResponse(resp)
-		if err != nil {
-			return nil, &CommerceError{Err: err}
-		}
-		return nil, &CommerceError{ApiError: chargeErr}
+	if err := handleErrorResponse(resp); err != nil {
+		return nil, err
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -99,12 +95,8 @@ func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeRespons
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultiStatus {
-		chargeErr, err := handleErrorResponse(resp)
-		if err != nil {
-			return nil, &CommerceError{Err: err}
-		}
-		return nil, &CommerceError{ApiError: chargeErr}
+	if err := handleErrorResponse(resp); err != nil {
+		return nil, err
 	}
 
 	body, err := io.ReadAll(resp.Body)
