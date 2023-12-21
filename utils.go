@@ -19,19 +19,22 @@ package commerce
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 )
 
-func handleErrorResponse(response *http.Response) (*ChargeError, error) {
+func handleErrorResponse(resp *http.Response) error {
+	if resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultiStatus {
+		return nil
+	}
+
 	chargeErr := &ChargeError{}
-	body, err := io.ReadAll(response.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("error reading body: %s", err)
-		return nil, err
+		return err
 	}
 	if err := json.Unmarshal(body, chargeErr); err != nil {
-		return nil, err
+		return err
 	}
-	return chargeErr, nil
+	return &CommerceError{ApiError: chargeErr}
+
 }
