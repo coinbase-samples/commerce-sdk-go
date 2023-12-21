@@ -1,6 +1,12 @@
+
+# Commerce Go SDK README
+
+[![GoDoc](https://godoc.org/github.com/coinbase-samples/commerce-sdk-go?status.svg)](https://godoc.org/github.com/coinbase-samples/commerce-sdk-go)
+[![Go Report Card](https://goreportcard.com/badge/coinbase-samples/commerce-sdk-go)](https://goreportcard.com/report/coinbase-samples/commerce-sdk-go)
+
 ## Overview
 
-The _Commerce Go SDK_ is a sample library that demonstrates the structure of a [Coinbase Commerce](https://commerce.coinbase.com/) driver for the [REST APIs](https://docs.cloud.coinbase.com/commerce/reference).
+The *Commerce Go SDK* is a sample library that demonstrates the structure of a [Coinbase Commerce](https://commerce.coinbase.com/) driver for the [REST APIs](https://docs.cloud.coinbase.com/commerce/reference).
 
 ## License
 
