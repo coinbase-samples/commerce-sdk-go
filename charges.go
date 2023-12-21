@@ -22,27 +22,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 )
 
 const (
 	chargesEndpoint = "/charges"
 )
-
-func (e *CommerceError) Error() string {
-	if e.ApiError != nil {
-		return fmt.Sprintf("API error: %v, warnings: %v", e.ApiError.Error, e.ApiError.Warnings)
-	}
-	return e.Err.Error()
-}
-
-func (c *Client) setHeaders(req *http.Request) {
-	req.Header.Set("X-CC-Api-Key", c.Credentials.ApiKey)
-	req.Header.Set("X-CC-Version", "2018-03-22")
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-}
 
 func (c *Client) CreateCharge(ctx context.Context, req *ChargeRequest) (*ChargeResponse, error) {
 
@@ -134,17 +119,4 @@ func (c *Client) GetCharge(ctx context.Context, chargeId string) (*ChargeRespons
 
 	return chargeResponse, nil
 
-}
-
-func handleErrorResponse(response *http.Response) (*ChargeError, error) {
-	chargeErr := &ChargeError{}
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		log.Fatalf("error reading body: %s", err)
-		return nil, err
-	}
-	if err := json.Unmarshal(body, chargeErr); err != nil {
-		return nil, err
-	}
-	return chargeErr, nil
 }
