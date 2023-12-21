@@ -42,12 +42,8 @@ func (c *Client) ListEvents(ctx context.Context) (*EventResponse, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultiStatus {
-		eventErr, err := handleErrorResponse(resp)
-		if err != nil {
-			return nil, &CommerceError{Err: err}
-		}
-		return nil, &CommerceError{ApiError: eventErr}
+	if err := handleErrorResponse(resp); err != nil {
+		return nil, err
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -86,12 +82,8 @@ func (c *Client) ShowEvent(ctx context.Context, eventId string) (*EventResponse,
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultiStatus {
-		eventErr, err := handleErrorResponse(resp)
-		if err != nil {
-			return nil, &CommerceError{Err: err}
-		}
-		return nil, &CommerceError{ApiError: eventErr}
+	if err := handleErrorResponse(resp); err != nil {
+		return nil, err
 	}
 
 	body, err := io.ReadAll(resp.Body)
