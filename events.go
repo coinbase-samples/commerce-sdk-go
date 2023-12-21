@@ -51,6 +51,9 @@ func (c *Client) ListEvents(ctx context.Context) (*EventResponse, error) {
 	}
 
 	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 
 	eventResponse := &EventResponse{}
 	if err := json.Unmarshal(body, eventResponse); err != nil {
