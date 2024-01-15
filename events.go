@@ -60,7 +60,7 @@ func (c *Client) ListEvents(ctx context.Context) (*EventResponse, error) {
 
 }
 
-func (c *Client) ShowEvent(ctx context.Context, eventId string) (*EventResponse, error) {
+func (c *Client) ShowEvent(ctx context.Context, eventId string) (*EventData, error) {
 
 	if eventId == "" {
 		return nil, errors.New("Please enter an eventId")
@@ -91,10 +91,10 @@ func (c *Client) ShowEvent(ctx context.Context, eventId string) (*EventResponse,
 		return nil, err
 	}
 
-	eventResponse := &EventResponse{}
-	if err = json.Unmarshal(body, eventResponse); err != nil {
+	eventData := &EventData{}
+	if err = json.Unmarshal(body, eventData); err != nil {
 		return nil, err
 	}
 
-	return eventResponse, nil
+	return eventData, nil
 }
