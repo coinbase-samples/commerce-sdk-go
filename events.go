@@ -59,7 +59,7 @@ func (c *Client) ListEvents(ctx context.Context) (*EventResponse, error) {
 	return eventResponse, nil
 }
 
-func (c *Client) ShowEvent(ctx context.Context, eventId string) (*EventData, error) {
+func (c *Client) ShowEvent(ctx context.Context, eventId string) (*SingleEvent, error) {
 
 	if eventId == "" {
 		return nil, errors.New("Please enter an eventId")
@@ -90,7 +90,7 @@ func (c *Client) ShowEvent(ctx context.Context, eventId string) (*EventData, err
 		return nil, err
 	}
 
-	eventData := &EventData{}
+	eventData := &SingleEvent{}
 	if err = json.Unmarshal(body, eventData); err != nil {
 		return nil, err
 	}

@@ -14,51 +14,43 @@
  * limitations under the License.
  */
 
-package commerce
+package main
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 	"testing"
 	"time"
+
+	"github.com/coinbase-samples/commerce-sdk-go"
 )
 
-func TestCreateCharge(t *testing.T) {
-	pricing_type := "fixed_price"
-	currency := "USD"
-	chargeAmount := "1.00"
+func TestShowEvent(t *testing.T) {
+
+	eventId := "2c63ac0e-24a5-4a63-a28a-affbc92ade75"
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	creds, err := ReadEnvCredentials("COMMERCE_API_KEY")
+	creds, err := commerce.ReadEnvCredentials("COMMERCE_API_KEY")
 	if err != nil {
 		t.Fatalf("error retireving credentials: %s ", err)
 	}
 
-	c := NewClient(creds, http.Client{})
-	req := &ChargeRequest{
-		PricingType: pricing_type,
-		LocalPrice: &LocalPrice{
-			Amount:   chargeAmount,
-			Currency: currency,
-		},
+	c := commerce.NewClient(creds, http.Client{})
+
+	eventData, err := c.ShowEvent(ctx, eventId)
+	if reflect.ValueOf(eventData).IsZero() {
+		t.Fatalf("no event returned")
 	}
 
-	chargeResponse, err := c.CreateCharge(ctx, req)
+	eventJson, err := json.MarshalIndent(eventData, "", " ")
 	if err != nil {
-		if commErr, ok := err.(*CommerceError); ok {
-			t.Fatalf("system error creating charge : %v", commErr)
-		} else {
-			t.Fatalf("error creating charge: %s", err)
-		}
+		t.Fatalf("error converting event data to JSON: %s", err)
 	}
 
-	formattedResponse, err := json.MarshalIndent(chargeResponse, " ", " ")
-	if err != nil {
-		t.Fatalf("error formatting charge: %b", err)
-	}
+	fmt.Printf("event successfully retrieved \n %s", string(eventJson[:]))
 
-	fmt.Print(string(formattedResponse))
 }
