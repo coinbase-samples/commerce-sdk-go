@@ -129,8 +129,6 @@ type ErrorMessage struct {
 	Value string `json:"message"`
 }
 
-// Events
-
 type EventResponse struct {
 	Pagination Pagination  `json:"pagination"`
 	Data       []EventData `json:"data"`
@@ -147,6 +145,11 @@ type Pagination struct {
 	NextUri       string     `json:"next_uri"`
 	Data          ChargeData `json:"data"`
 	CursorRange   []string   `json:"cursor_range"`
+}
+
+type SingleEvent struct {
+	Data     EventData               `json:"data"`
+	Warnings *map[string]interface{} `json:"warnings"`
 }
 
 type EventData struct {
